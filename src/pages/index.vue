@@ -48,7 +48,7 @@ const go = async () => {
   }).reduce((prev, cur) => prev.concat(cur), []).concat(currentQuestion)
 
   isPending = true
-  const response = await fetch('http://127.0.0.1:8080', {
+  const response = await fetch('http://159.223.88.132:8000', {
     method: 'POST',
     body: JSON.stringify(data),
   })
@@ -88,6 +88,9 @@ const onKeyDown = (e: KeyboardEvent) => {
           >
             {{ k }}
           </button>
+          <div py-2>
+            <img src="../../public/wt.jpeg" alt="" w-20 rounded-full m-auto>
+          </div>
         </div>
       </div>
       <div border-t border-gray-7 py-2>

@@ -8,9 +8,10 @@ body,
 
 pre {
   margin-left: 1rem;
-  border-left: 4px solid skyblue;
+  border-left: 4px solid #218bff;
   padding-left: 0.5rem;
   line-height: 1.1rem;
+  background-color: rgba(33, 139, 255, 0.1);
 }
 
 code {
@@ -26,7 +27,7 @@ code {
 }
 
 pre > code {
-  background-color: inherit;
+  background-color: transparent;
   color: inherit;
   font-size: inherit;
   font-weight: inherit;
