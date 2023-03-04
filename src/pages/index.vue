@@ -48,7 +48,7 @@ const go = async () => {
   }).reduce((prev, cur) => prev.concat(cur), []).concat(currentQuestion)
 
   isPending = true
-  const response = await fetch('http://159.223.88.132:8000', {
+  const response = await fetch('https://api.jiemichat.wuwe1.com:8000', {
     method: 'POST',
     body: JSON.stringify(data),
   })
