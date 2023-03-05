@@ -75,8 +75,8 @@ const onKeyDown = (e: KeyboardEvent) => {
 </script>
 
 <template>
-  <div h-screen grid grid-cols-8>
-    <nav col-span-2 h-screen border-x border-gray-2 dark:border-gray-7 flex="~ col" justify-between>
+  <div class="container" grid grid-cols-8>
+    <nav col-span-2 h-full border-x border-gray-2 dark:border-gray-7 flex="~ col" justify-between>
       <div>
         <div border-b border-gray-2 dark:border-gray-7 py-2 uppercase font-mono>
           <div py-2>
@@ -103,17 +103,16 @@ const onKeyDown = (e: KeyboardEvent) => {
     </nav>
     <main
       col-span-6
-      h-screen
-      flex="~ col"
+      relative
       border-r border-gray-2 dark:border-gray-7
     >
-      <div
+      <article
         v-if="qaArray.length === 0"
-        h-full flex items-center justify-center
+        h-screen flex items-center justify-center
       >
         <p>Welcome to JieMi Chat</p>
-      </div>
-      <article v-else text-left px-8 overflow-scroll h-full>
+      </article>
+      <article v-else text-left px-8 h-screen overflow-scroll pb-30>
         <div v-for="(qa, index) in qaArray" :key="index">
           <div font-mono text-green-3>
             {{ qa.question.content }}
@@ -126,7 +125,7 @@ const onKeyDown = (e: KeyboardEvent) => {
         </div>
       </article>
 
-      <div flex w-full h-32>
+      <div w-full h-32 absolute left-0 bottom-0>
         <div w-full px-6 pb-2>
           <div h-20 flex items-center>
             <div
@@ -177,6 +176,16 @@ const onKeyDown = (e: KeyboardEvent) => {
 
   100% {
     background-position: 0% 50%;
+  }
+}
+
+.container {
+  height: 100vh;
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    height: calc(100vh - 56px);
   }
 }
 </style>

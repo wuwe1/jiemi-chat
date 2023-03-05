@@ -11,7 +11,7 @@ const { modelValue } = defineModel<{
     type="text"
     v-bind="$attrs"
     p="x-4 y-2"
-    bg="transparent"
+    bg-white dark:bg-gray-9
     border rounded border-gray-2 dark:border-gray-7
     outline="none active:none"
   />
