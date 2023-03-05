@@ -14,7 +14,7 @@ const { modelValue } = defineModel<{
     w-80
     text="center"
     bg="transparent"
-    border="~ rounded gray-200 dark:gray-700"
+    border rounded border-gray-2 dark:border-gray-7
     outline="none active:none"
   >
 </template>
