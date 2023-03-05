@@ -75,7 +75,7 @@ const onKeyDown = (e: KeyboardEvent) => {
 </script>
 
 <template>
-  <div class="container" grid grid-cols-8>
+  <div class="fit" grid grid-cols-9>
     <nav col-span-2 h-full border-x border-gray-2 dark:border-gray-7 flex="~ col" justify-between>
       <div>
         <div border-b border-gray-2 dark:border-gray-7 py-2 uppercase font-mono>
@@ -102,17 +102,20 @@ const onKeyDown = (e: KeyboardEvent) => {
       </div>
     </nav>
     <main
-      col-span-6
-      relative
-      border-r border-gray-2 dark:border-gray-7
+      col-span-6 flex="~ col"
+      border-r border-gray-2 dark:border-gray-7 overflow-hidden
     >
       <article
         v-if="qaArray.length === 0"
-        h-screen flex items-center justify-center
+        h-full flex items-center justify-center
       >
-        <p>Welcome to JieMi Chat</p>
+        <div>
+          <p>👋 Welcome to JieMi Chat!</p>
+          <p>press <code>⌘ + enter</code> or <code>ctrl + enter</code> to submit</p>
+          <p>press the left hand side buttom use predefined prompt</p>
+        </div>
       </article>
-      <article v-else text-left px-8 h-screen overflow-scroll pb-30>
+      <article v-else text-left px-8 overflow-y-auto flex-1>
         <div v-for="(qa, index) in qaArray" :key="index">
           <div font-mono text-green-3>
             {{ qa.question.content }}
@@ -125,7 +128,7 @@ const onKeyDown = (e: KeyboardEvent) => {
         </div>
       </article>
 
-      <div w-full h-32 absolute left-0 bottom-0>
+      <div w-full h-32>
         <div w-full px-6 pb-2>
           <div h-20 flex items-center>
             <div
@@ -179,12 +182,12 @@ const onKeyDown = (e: KeyboardEvent) => {
   }
 }
 
-.container {
+.fit {
   height: 100vh;
 }
 
 @media screen and (max-width: 768px) {
-  .container {
+  .fit {
     height: calc(100vh - 56px);
   }
 }
