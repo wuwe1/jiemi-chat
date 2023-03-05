@@ -27,9 +27,10 @@ interface QA {
 const qaArray = reactive<QA[]>([])
 
 const clear = () => {
-  for (let i = 0; i < qaArray.length; i++)
-    qaArray.pop()
+  const arr = unref(qaArray)
+  arr.splice(0, arr.length)
 }
+
 const go = async () => {
   if (question.length === 0)
     return
