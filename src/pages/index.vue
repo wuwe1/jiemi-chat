@@ -127,18 +127,21 @@ const onKeyDown = (e: KeyboardEvent) => {
 
       <div flex w-full h-32>
         <div w-full px-6 pb-2>
-          <div
-            v-if="isPending" rounded w-full mb-4 h-2
-            class="gradient-bg-animation"
-          />
-          <TheTextArea
-            v-else
-            v-model="question"
-            w-full
-            font-mono :disabled="isPending"
-            @keydown="onKeyDown"
-          />
-          <div mt-1 flex flex-gap-2>
+          <div h-20 flex items-center>
+            <div
+              v-if="isPending"
+              rounded w-full h-2
+              class="gradient-bg-animation"
+            />
+            <TheTextArea
+              v-else
+              v-model="question"
+              w-full
+              font-mono :disabled="isPending"
+              @keydown="onKeyDown"
+            />
+          </div>
+          <div flex flex-gap-2>
             <button text-sm btn w-full :disabled="isPending" @click="go">
               Go
             </button>
