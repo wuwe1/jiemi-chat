@@ -87,6 +87,7 @@ const onKeyDown = (e: KeyboardEvent) => {
           <button
             v-for="(v, k) in prompts" :key="k"
             m-1 px-2
+            text-white
             bg-blue-3 dark:bg-blue-6 rounded text-sm uppercase font-mono
             hover:bg-blue-2 dark:hover:bg-blue-5
             @click="v"
@@ -99,14 +100,19 @@ const onKeyDown = (e: KeyboardEvent) => {
         <TheFooter />
       </div>
     </nav>
-    <div
+    <main
       col-span-6
       h-screen
-      relative
+      flex="~ col"
       border-r border-gray-2 dark:border-gray-7
-      overflow-scroll
     >
-      <div text-left px-8>
+      <div
+        v-if="qaArray.length === 0"
+        h-full flex items-center justify-center
+      >
+        <p>Welcome to JieMi Chat</p>
+      </div>
+      <article v-else text-left px-8 overflow-scroll h-full>
         <div v-for="(qa, index) in qaArray" :key="index">
           <div font-mono text-green-3>
             {{ qa.question.content }}
@@ -117,14 +123,14 @@ const onKeyDown = (e: KeyboardEvent) => {
           </div>
           <br>
         </div>
-      </div>
+      </article>
 
-      <div
-        flex w-full
-        absolute bottom-0 left-0
-      >
+      <div flex w-full h-32>
         <div w-full px-6 pb-2>
-          <div v-if="isPending" m-auto class="gradient-bg-animation" h-2 />
+          <div
+            v-if="isPending" rounded w-full mb-4 h-2
+            class="gradient-bg-animation"
+          />
           <TheTextArea
             v-else
             v-model="question"
@@ -132,7 +138,7 @@ const onKeyDown = (e: KeyboardEvent) => {
             font-mono :disabled="isPending"
             @keydown="onKeyDown"
           />
-          <div flex flex-gap-2>
+          <div mt-1 flex flex-gap-2>
             <button text-sm btn w-full :disabled="isPending" @click="go">
               Go
             </button>
@@ -142,7 +148,7 @@ const onKeyDown = (e: KeyboardEvent) => {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   </div>
 </template>
 
