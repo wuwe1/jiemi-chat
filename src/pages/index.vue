@@ -1,6 +1,20 @@
 <script setup lang="ts">
+import MarkdownIt from 'markdown-it'
+import hljs from 'highlight.js'
+
 let isPending = $ref(false)
 let question = $ref('')
+
+const md = new MarkdownIt({
+  highlight(str: string) {
+    try {
+      return hljs.highlightAuto(str).value
+    }
+    catch (__) {}
+
+    return ''
+  },
+})
 
 const API_ENDPOINT = 'https://chat-api.wuwe1.workers.dev'
 
@@ -52,20 +66,26 @@ const go = async () => {
   }).reduce((prev, cur) => prev.concat(cur), []).concat(currentQuestion)
 
   isPending = true
-  const response = await fetch(API_ENDPOINT, {
-    method: 'POST',
-    body: JSON.stringify(data),
-  })
-  const { content, usage } = await response.json() as Message
-  if (response.ok) {
-    qaArray.push({
-      answer: { content, usage },
-      question: { content: question },
+  try {
+    const response = await fetch(API_ENDPOINT, {
+      method: 'POST',
+      body: JSON.stringify(data),
     })
+    const { content, usage } = await response.json() as Message
+    if (response.ok) {
+      qaArray.push({
+        answer: { content, usage },
+        question: { content: question },
+      })
+    }
+    question = ''
   }
+  catch (e) {
 
-  isPending = false
-  question = ''
+  }
+  finally {
+    isPending = false
+  }
 }
 
 const onKeyDown = (e: KeyboardEvent) => {
@@ -120,12 +140,12 @@ const onKeyDown = (e: KeyboardEvent) => {
           <p>press the left hand side buttom use predefined prompt</p>
         </div>
       </article>
-      <article v-else text-left px-8 overflow-y-auto flex-1>
+      <article v-else text-left px-8 overflow-y-auto flex-1 pt-16>
         <div v-for="(qa, index) in qaArray" :key="index">
           <div font-mono text-green-3>
             {{ qa.question.content }}
           </div>
-          <div p="x-4 y-2" dark:text-gray-2 border="~ rounded none" v-html="qa.answer.content" />
+          <div p="x-4 y-2" dark:text-gray-2 border="~ rounded none" v-html="md.render(qa.answer.content)" />
           <div text-right bg-blue-2 dark:bg-blue-7 px-2 text-sm>
             total tokens: {{ qa.answer.usage?.total_tokens }} / 4096
           </div>
