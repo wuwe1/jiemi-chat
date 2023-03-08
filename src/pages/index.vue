@@ -2,6 +2,8 @@
 let isPending = $ref(false)
 let question = $ref('')
 
+const API_ENDPOINT = 'https://chat-api.wuwe1.workers.dev'
+
 const prompts = {
   'let\'s think step by step': () =>
     question += ' let\'s think step by step',
@@ -50,7 +52,7 @@ const go = async () => {
   }).reduce((prev, cur) => prev.concat(cur), []).concat(currentQuestion)
 
   isPending = true
-  const response = await fetch('https://api.jiemichat.wuwe1.com:8000', {
+  const response = await fetch(API_ENDPOINT, {
     method: 'POST',
     body: JSON.stringify(data),
   })
@@ -76,14 +78,8 @@ const onKeyDown = (e: KeyboardEvent) => {
 
 <template>
   <div class="fit" grid grid-cols-9>
-    <nav col-span-2 h-full border-x border-gray-2 dark:border-gray-7 flex="~ col" justify-between>
+    <nav col-span-2 h-full border-x border-gray-2 dark:border-gray-7>
       <div>
-        <div border-b border-gray-2 dark:border-gray-7 py-2 uppercase font-mono>
-          <div py-2>
-            <img src="../../public/wt.jpeg" alt="" w-20 rounded-full m-auto>
-          </div>
-          Jiemi Chat
-        </div>
         <div pt-2>
           <button
             v-for="(v, k) in prompts" :key="k"
@@ -97,14 +93,23 @@ const onKeyDown = (e: KeyboardEvent) => {
           </button>
         </div>
       </div>
-      <div border-t border-gray-2 dark:border-gray-7 py-2>
-        <TheFooter />
-      </div>
     </nav>
     <main
-      col-span-6 flex="~ col"
+      col-span-6 flex="~ col" relative
       border-r border-gray-2 dark:border-gray-7 overflow-hidden
     >
+      <div
+        absolute top-0 w-full
+        backdrop-blur
+        flex justify-around items-center
+        border-b border-gray-2 dark:border-gray-7 py-2 uppercase font-mono
+      >
+        <div>
+          <img inline-block src="../../public/wt.jpeg" alt="" w-10 rounded-full m-auto>
+          <span text-lg> JieMi Chat </span>
+        </div>
+        <TheFooter />
+      </div>
       <article
         v-if="qaArray.length === 0"
         h-full flex items-center justify-center
