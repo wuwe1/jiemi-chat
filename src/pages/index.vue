@@ -33,6 +33,7 @@ interface Usage {
 interface Message {
   content: string
   usage?: Usage
+  timeElapsed?: number
 }
 
 interface QA {
@@ -67,17 +68,18 @@ const go = async () => {
 
   isPending = true
   try {
+    const start = (new Date()).getTime()
     const response = await fetch(API_ENDPOINT, {
       method: 'POST',
       body: JSON.stringify(data),
     })
     const { content, usage } = await response.json() as Message
-    if (response.ok) {
-      qaArray.push({
-        answer: { content, usage },
-        question: { content: question },
-      })
-    }
+    if (!response.ok)
+      throw new Error('Api Error')
+    qaArray.push({
+      answer: { content, usage, timeElapsed: (new Date()).getTime() - start },
+      question: { content: question },
+    })
     question = ''
   }
   catch (e) {
@@ -147,7 +149,7 @@ const onKeyDown = (e: KeyboardEvent) => {
           </div>
           <div p="x-4 y-2" dark:text-gray-2 border="~ rounded none" v-html="md.render(qa.answer.content)" />
           <div text-right bg-blue-2 dark:bg-blue-7 px-2 text-sm>
-            total tokens: {{ qa.answer.usage?.total_tokens }} / 4096
+            {{ `took ${qa.answer.timeElapsed! / 1000}s total tokens: ${qa.answer.usage?.total_tokens}/4096` }}
           </div>
           <br>
         </div>
