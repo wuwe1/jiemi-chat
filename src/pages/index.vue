@@ -2,29 +2,6 @@
 import MarkdownIt from 'markdown-it'
 import hljs from 'highlight.js'
 
-let isPending = $ref(false)
-let question = $ref('')
-
-const md = new MarkdownIt({
-  highlight(str: string) {
-    try {
-      return hljs.highlightAuto(str).value
-    }
-    catch (__) {}
-
-    return ''
-  },
-})
-
-const API_ENDPOINT = 'https://chat-api.wuwe1.workers.dev'
-
-const prompts = {
-  'let\'s think step by step': () =>
-    question += ' let\'s think step by step',
-  'dictionary': () =>
-    question += 'what is the phonetic transcript of "word" without other text and what is the meaning of the word',
-}
-
 interface Usage {
   prompt_tokens: number
   completion_tokens: number
@@ -46,6 +23,68 @@ const qaArray = reactive<QA[]>([])
 const clear = () => {
   const arr = unref(qaArray)
   arr.splice(0, arr.length)
+}
+
+const speechText = ref('')
+const voice = ref<SpeechSynthesisVoice>(undefined as unknown as SpeechSynthesisVoice)
+const playingIndex = ref(undefined as unknown as number)
+const voices = ref<SpeechSynthesisVoice[]>([])
+const speech = useSpeechSynthesis(speechText, { voice })
+
+onMounted(() => {
+  if (speech.isSupported.value) {
+    setTimeout(() => {
+      voices.value = window.speechSynthesis.getVoices()
+      voice.value = voices.value[0]
+    })
+  }
+})
+
+const isPlaying = (index: number) => {
+  return index === playingIndex.value && speech.status.value === 'play'
+}
+
+const play = (index: number) => {
+  if (playingIndex.value !== index) {
+    playingIndex.value = index
+    window.speechSynthesis.cancel()
+    speech.toggle(false)
+    speechText.value = qaArray[index].answer.content
+    speech.speak()
+    return
+  }
+
+  if (speech.status.value === 'pause')
+    window.speechSynthesis.resume()
+  else
+    speech.speak()
+}
+
+const pause = () => {
+  window.speechSynthesis.pause()
+}
+
+let isPending = $ref(false)
+let question = $ref('')
+
+const md = new MarkdownIt({
+  highlight(str: string) {
+    try {
+      return hljs.highlightAuto(str).value
+    }
+    catch (__) {}
+
+    return ''
+  },
+})
+
+const API_ENDPOINT = 'https://chat-api.wuwe1.workers.dev'
+
+const prompts = {
+  'step by step': () =>
+    question += ' let\'s think step by step',
+  'dict': () =>
+    question += 'what is the phonetic transcript of "word" without other text and what is the meaning of the word',
 }
 
 const go = async () => {
@@ -100,7 +139,7 @@ const onKeyDown = (e: KeyboardEvent) => {
 
 <template>
   <div class="fit" grid grid-cols-9>
-    <nav col-span-2 h-full border-x border-gray-2 dark:border-gray-7>
+    <nav col-span-1 h-full border-x border-gray-2 dark:border-gray-7>
       <div>
         <div pt-2>
           <button
@@ -117,14 +156,14 @@ const onKeyDown = (e: KeyboardEvent) => {
       </div>
     </nav>
     <main
-      col-span-6 flex="~ col" relative
+      col-span-8 flex="~ col" relative
       border-r border-gray-2 dark:border-gray-7 overflow-hidden
     >
       <div
         absolute top-0 w-full
         backdrop-blur
-        flex justify-around items-center
-        border-b border-gray-2 dark:border-gray-7 py-2 uppercase font-mono
+        flex justify-between items-center
+        border-b border-gray-2 dark:border-gray-7 p-2 uppercase font-mono
       >
         <div>
           <img inline-block src="../../public/wt.jpeg" alt="" w-10 rounded-full m-auto>
@@ -148,6 +187,10 @@ const onKeyDown = (e: KeyboardEvent) => {
             {{ qa.question.content }}
           </div>
           <div p="x-4 y-2" dark:text-gray-2 border="~ rounded none" v-html="md.render(qa.answer.content)" />
+          <div v-if="speech.isSupported">
+            <button v-if="isPlaying(index)" icon-btn i-carbon-stop-filled bg-green-4 dark:bg-green-2 @click="pause" />
+            <button v-else icon-btn i-carbon-play-filled bg-green-4 dark:bg-green-2 @click="() => play(index)" />
+          </div>
           <div text-right bg-blue-2 dark:bg-blue-7 px-2 text-sm>
             {{ `took ${qa.answer.timeElapsed! / 1000}s total tokens: ${qa.answer.usage?.total_tokens}/4096` }}
           </div>
