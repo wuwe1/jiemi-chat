@@ -162,7 +162,6 @@ const onKeyDown = (e: KeyboardEvent) => {
         <div>
           <p>👋 Welcome to JieMi Chat!</p>
           <p>press <code>⌘ + enter</code> or <code>ctrl + enter</code> to submit</p>
-          <p>press the left hand side buttom use predefined prompt</p>
         </div>
       </article>
       <article v-else text-left px-8 overflow-y-auto flex-1 pt-16>
