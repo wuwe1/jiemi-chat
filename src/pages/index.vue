@@ -80,12 +80,12 @@ const md = new MarkdownIt({
 
 const API_ENDPOINT = 'https://chat-api.wuwe1.workers.dev'
 
-const prompts = {
-  'step by step': () =>
-    question += ' let\'s think step by step',
-  'dict': () =>
-    question += 'what is the phonetic transcript of "word" without other text and what is the meaning of the word',
-}
+// const prompts = {
+//   'step by step': () =>
+//     question += ' let\'s think step by step',
+//   'dict': () =>
+//     question += 'what is the phonetic transcript of "word" without other text and what is the meaning of the word',
+// }
 
 const go = async () => {
   if (question.length === 0)
@@ -139,24 +139,8 @@ const onKeyDown = (e: KeyboardEvent) => {
 
 <template>
   <div class="fit" grid grid-cols-9>
-    <nav col-span-1 h-full border-x border-gray-2 dark:border-gray-7>
-      <div>
-        <div pt-2>
-          <button
-            v-for="(v, k) in prompts" :key="k"
-            m-1 px-2
-            text-white
-            bg-blue-3 dark:bg-blue-6 rounded text-sm uppercase font-mono
-            hover:bg-blue-2 dark:hover:bg-blue-5
-            @click="v"
-          >
-            {{ k }}
-          </button>
-        </div>
-      </div>
-    </nav>
     <main
-      col-span-8 flex="~ col" relative
+      col-span-9 flex="~ col" relative
       border-r border-gray-2 dark:border-gray-7 overflow-hidden
     >
       <div
